@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -42,11 +43,15 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(libs.retrofit)
-    implementation(libs.converter.kotlinx.serialization)
+    implementation(libs.koin.core)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.koin.core)
+    implementation(libs.retrofit)
+    implementation(libs.converter.kotlinx.serialization)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.retrocache)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockwebserver3)
+    testImplementation(libs.truth)
 }

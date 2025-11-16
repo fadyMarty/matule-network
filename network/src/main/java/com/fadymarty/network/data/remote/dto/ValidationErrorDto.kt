@@ -3,7 +3,7 @@ package com.fadymarty.network.data.remote.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AuthResponseDto(
-    val record: UserDto,
-    val token: String,
+data class ValidationErrorDto(
+    val code: String,
+    val message: String,
 )

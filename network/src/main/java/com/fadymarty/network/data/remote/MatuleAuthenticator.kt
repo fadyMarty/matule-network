@@ -26,10 +26,12 @@ class MatuleAuthenticator(
             try {
                 token?.let {
                     val authResponse = refresh(it)
-                    authManager.saveSession(
-                        token = authResponse.token,
-                        userId = authResponse.record.id
-                    )
+                    authResponse.record.id?.let { id ->
+                        authManager.saveSession(
+                            token = authResponse.token,
+                            userId = id
+                        )
+                    }
                     response.request.newBuilder()
                         .addHeader("Authorization", authResponse.token)
                         .build()

@@ -1,5 +1,6 @@
 package com.fadymarty.network.data.remote.dto
 
+import com.fadymarty.network.domain.model.Project
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -20,4 +21,22 @@ data class ProjectDto(
     val image: String,
     @SerialName("user_id")
     val userId: String,
-)
+) {
+    fun toProject(): Project {
+        return Project(
+            id = id,
+            collectionId = collectionId,
+            collectionName = collectionName,
+            created = created,
+            updated = updated,
+            title = title,
+            dateStart = dateStart,
+            dateEnd = dateEnd,
+            gender = gender,
+            descriptionSource = descriptionSource,
+            category = category,
+            image = image,
+            userId = userId
+        )
+    }
+}

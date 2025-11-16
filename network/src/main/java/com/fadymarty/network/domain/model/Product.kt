@@ -1,9 +1,6 @@
 package com.fadymarty.network.domain.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class ProductDto(
+data class Product(
     val id: String,
     val collectionId: String,
     val collectionName: String,

@@ -14,6 +14,7 @@ class AuthManagerImpl(
     companion object {
         private val TOKEN = stringPreferencesKey("token")
         private val USER_ID = stringPreferencesKey("user_id")
+        private val PIN = stringPreferencesKey("pin")
     }
 
     override suspend fun saveSession(token: String, userId: String) {
@@ -35,10 +36,23 @@ class AuthManagerImpl(
         }
     }
 
+    override suspend fun savePin(pin: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PIN] = pin
+        }
+    }
+
+    override fun getPin(): Flow<String?> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PIN]
+        }
+    }
+
     override suspend fun clearSession() {
         context.dataStore.edit { preferences ->
             preferences.remove(TOKEN)
             preferences.remove(USER_ID)
+            preferences.remove(PIN)
         }
     }
 }
