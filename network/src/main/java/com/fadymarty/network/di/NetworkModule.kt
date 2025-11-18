@@ -9,15 +9,15 @@ import com.fadymarty.network.data.remote.MatuleInterceptor
 import com.fadymarty.network.data.repository.MatuleRepositoryImpl
 import com.fadymarty.network.domain.manager.AuthManager
 import com.fadymarty.network.domain.repository.MatuleRepository
-import com.fadymarty.network.domain.use_case.bucket.AddProductToCartUseCase
+import com.fadymarty.network.domain.use_case.bucket.AddProductToBucketUseCase
 import com.fadymarty.network.domain.use_case.bucket.DeleteCartUseCase
 import com.fadymarty.network.domain.use_case.bucket.GetBucketUseUse
 import com.fadymarty.network.domain.use_case.bucket.UpdateCartUseCase
 import com.fadymarty.network.domain.use_case.order.CreateOrderUseCase
 import com.fadymarty.network.domain.use_case.projects.CreateProjectUseCase
 import com.fadymarty.network.domain.use_case.projects.GetProjectsUseCase
+import com.fadymarty.network.domain.use_case.shop.GetCatalogUseCase
 import com.fadymarty.network.domain.use_case.shop.GetNewsUseCase
-import com.fadymarty.network.domain.use_case.shop.GetProductByIdUseCase
 import com.fadymarty.network.domain.use_case.shop.SearchProductsUseCase
 import com.fadymarty.network.domain.use_case.user.ClearSessionUseCase
 import com.fadymarty.network.domain.use_case.user.GetCurrentUserUseCase
@@ -88,11 +88,11 @@ val networkModule = module {
     singleOf(::GetPinUseCase)
 
     singleOf(::GetNewsUseCase)
+    singleOf(::GetCatalogUseCase)
     singleOf(::SearchProductsUseCase)
-    singleOf(::GetProductByIdUseCase)
 
     singleOf(::GetBucketUseUse)
-    singleOf(::AddProductToCartUseCase)
+    singleOf(::AddProductToBucketUseCase)
     singleOf(::DeleteCartUseCase)
     singleOf(::UpdateCartUseCase)
 

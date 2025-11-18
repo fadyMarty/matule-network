@@ -1,12 +1,12 @@
 package com.fadymarty.network.domain.use_case.order
 
-import com.fadymarty.network.domain.model.Order
+import com.fadymarty.network.domain.model.Cart
 import com.fadymarty.network.domain.repository.MatuleRepository
 
 class CreateOrderUseCase(
     private val matuleRepository: MatuleRepository,
 ) {
-    suspend operator fun invoke(order: Order): Result<Order> {
-        return matuleRepository.createOrder(order)
+    suspend operator fun invoke(bucket: List<Cart>): Result<Unit> {
+        return matuleRepository.createOrder(bucket)
     }
 }

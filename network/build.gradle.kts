@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-
     alias(libs.plugins.kotlin.serialization)
+    id("maven-publish")
 }
 
 android {
@@ -54,4 +54,18 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockwebserver3)
     testImplementation(libs.truth)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.gitea.fadymarty"
+            artifactId = "matule-network"
+            version = "1.0.0"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
 }

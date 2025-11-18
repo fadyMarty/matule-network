@@ -10,6 +10,8 @@ import com.fadymarty.network.data.remote.dto.ProjectDto
 import com.fadymarty.network.data.remote.dto.UserDto
 import com.fadymarty.network.data.remote.dto.requests.AuthRequest
 import ge.tbcbank.retrocache.Cache
+import ge.tbcbank.retrocache.CacheControl
+import ge.tbcbank.retrocache.CachePolicy
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -45,7 +47,9 @@ interface MatuleApi {
     // Получение акций
     @Cache
     @GET("collections/news/records")
-    suspend fun getNews(): PocketbaseResponseDto<NewsDto>
+    suspend fun getNews(
+        @CacheControl cachePolicy: CachePolicy = CachePolicy.Cached,
+    ): PocketbaseResponseDto<NewsDto>
 
     // Получение каталога
     @Cache
@@ -120,6 +124,6 @@ interface MatuleApi {
     )
 
     companion object {
-        const val BASE_URL = "https://api.matule.ru/api/"
+        const val BASE_URL = "http://77.239.125.32:8090/api/"
     }
 }

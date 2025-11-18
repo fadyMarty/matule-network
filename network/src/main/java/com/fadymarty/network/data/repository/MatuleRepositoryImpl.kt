@@ -57,6 +57,12 @@ class MatuleRepositoryImpl(
         }
     }
 
+    override suspend fun getCatalog(): Result<List<Product>> {
+        return safeCall {
+            matuleApi.getCatalog().items.map { it.toProduct() }
+        }
+    }
+
     override suspend fun searchProducts(
         query: String,
         type: String?,
@@ -95,9 +101,16 @@ class MatuleRepositoryImpl(
         }
     }
 
-    override suspend fun createOrder(order: Order): Result<Order> {
+    override suspend fun createOrder(bucket: List<Cart>): Result<Unit> {
         return safeCall {
-            matuleApi.createOrder(order.toOrderDto()).toOrder()
+            bucket.forEach { cart ->
+                val order = Order(
+                    userId = cart.userId,
+                    productId = cart.productId,
+                    count = cart.count
+                )
+                matuleApi.createOrder(order.toOrderDto()).toOrder()
+            }
         }
     }
 
