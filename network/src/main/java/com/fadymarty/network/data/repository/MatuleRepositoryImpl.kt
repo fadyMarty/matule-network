@@ -24,8 +24,8 @@ class MatuleRepositoryImpl(
     ): Result<Unit> {
         return safeCall {
             val authResponse = matuleApi.authenticate(AuthRequest(email, password))
-            authResponse.record.id?.let {
-                authManager.saveSession(authResponse.token, it)
+            authResponse.record.id?.let { id ->
+                authManager.saveSession(authResponse.token, id)
             }
         }
     }
@@ -34,7 +34,8 @@ class MatuleRepositoryImpl(
         return safeCall {
             matuleApi.register(user.toUserDto())
             user.password?.let { password ->
-                val authResponse = matuleApi.authenticate(AuthRequest(user.email, password))
+                val request = AuthRequest(user.email, password)
+                val authResponse = matuleApi.authenticate(request)
                 authResponse.record.id?.let {
                     authManager.saveSession(authResponse.token, it)
                 }
