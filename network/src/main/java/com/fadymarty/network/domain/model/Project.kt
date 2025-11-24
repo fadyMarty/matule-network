@@ -1,11 +1,8 @@
-package com.fadymarty.network.data.remote.dto
+package com.fadymarty.network.domain.model
 
-import com.fadymarty.network.domain.model.Project
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.fadymarty.network.data.remote.dto.ProjectDto
 
-@Serializable
-data class ProjectDto(
+data class Project(
     val id: String? = null,
     val collectionId: String? = null,
     val collectionName: String? = null,
@@ -16,15 +13,13 @@ data class ProjectDto(
     val dateStart: String,
     val dateEnd: String,
     val gender: String? = null,
-    @SerialName("description_source")
     val descriptionSource: String,
     val category: String? = null,
     val image: String? = null,
-    @SerialName("user_id")
     val userId: String,
 ) {
-    fun toProject(): Project {
-        return Project(
+    fun toProjectDto(): ProjectDto {
+        return ProjectDto(
             id = id,
             collectionId = collectionId,
             collectionName = collectionName,
