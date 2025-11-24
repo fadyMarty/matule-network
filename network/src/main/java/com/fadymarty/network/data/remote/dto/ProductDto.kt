@@ -1,5 +1,6 @@
 package com.fadymarty.network.data.remote.dto
 
+import com.fadymarty.network.domain.model.Product
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,4 +16,20 @@ data class ProductDto(
     val typeCloses: String,
     val type: String,
     val approximateCost: String,
-)
+) {
+    fun toProduct(): Product {
+        return Product(
+            id = id,
+            collectionId = collectionId,
+            collectionName = collectionName,
+            created = created,
+            updated = updated,
+            title = title,
+            description = description,
+            price = price,
+            typeCloses = typeCloses,
+            type = type,
+            approximateCost = approximateCost
+        )
+    }
+}

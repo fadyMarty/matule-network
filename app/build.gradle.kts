@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.fadymarty.matulenetwork"
+    namespace = "com.fadymarty.matule_network"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.fadymarty.matulenetwork"
+        applicationId = "com.fadymarty.matule_network"
         minSdk = 33
         targetSdk = 36
         versionCode = 1
@@ -42,4 +42,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+    implementation(libs.koin.android)
+    implementation(project(":network"))
 }

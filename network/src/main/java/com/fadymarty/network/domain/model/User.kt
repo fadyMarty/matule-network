@@ -1,21 +1,15 @@
-package com.fadymarty.network.data.remote.dto
+package com.fadymarty.network.domain.model
 
-import com.fadymarty.network.domain.model.User
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.fadymarty.network.data.remote.dto.UserDto
 
-@Serializable
-data class UserDto(
+data class User(
     val collectionId: String? = null,
     val collectionName: String? = null,
     val created: String? = null,
     val emailVisibility: Boolean? = null,
-    @SerialName("firstname")
     val firstName: String,
     val id: String? = null,
-    @SerialName("lastname")
     val lastName: String,
-    @SerialName("secondname")
     val secondName: String,
     val updated: String? = null,
     val verified: Boolean? = null,
@@ -25,8 +19,8 @@ data class UserDto(
     val password: String? = null,
     val passwordConfirm: String? = null,
 ) {
-    fun toUser(): User {
-        return User(
+    fun toUserDto(): UserDto {
+        return UserDto(
             collectionId = collectionId,
             collectionName = collectionName,
             created = created,
