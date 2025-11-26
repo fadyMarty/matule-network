@@ -14,6 +14,8 @@ import com.fadymarty.network.domain.use_case.bucket.DeleteCartUseCase
 import com.fadymarty.network.domain.use_case.bucket.GetBucketUseCase
 import com.fadymarty.network.domain.use_case.bucket.UpdateCartUseCase
 import com.fadymarty.network.domain.use_case.order.CreateOrderUseCase
+import com.fadymarty.network.domain.use_case.pin.GetPinUseCase
+import com.fadymarty.network.domain.use_case.pin.SavePinUseCase
 import com.fadymarty.network.domain.use_case.project.CreateProjectUseCase
 import com.fadymarty.network.domain.use_case.project.GetProjectsUseCase
 import com.fadymarty.network.domain.use_case.shop.GetNewsUseCase
@@ -21,6 +23,7 @@ import com.fadymarty.network.domain.use_case.shop.GetProductByIdUseCase
 import com.fadymarty.network.domain.use_case.shop.GetProductsUseCase
 import com.fadymarty.network.domain.use_case.shop.SearchProductsUseCase
 import com.fadymarty.network.domain.use_case.user.AuthWithPasswordUseCase
+import com.fadymarty.network.domain.use_case.user.ClearSessionUseCase
 import com.fadymarty.network.domain.use_case.user.GetCurrentUserUseCase
 import com.fadymarty.network.domain.use_case.user.GetUserByIdUseCase
 import com.fadymarty.network.domain.use_case.user.RegisterUseCase
@@ -72,6 +75,12 @@ val networkModule = module {
     singleOf(::AuthWithPasswordUseCase)
 
     singleOf(::RegisterUseCase)
+
+    singleOf(::SavePinUseCase)
+
+    singleOf(::GetPinUseCase)
+
+    singleOf(::ClearSessionUseCase)
 
     singleOf(::UpdateUserUseCase)
 

@@ -6,7 +6,10 @@ import com.fadymarty.network.domain.repository.MatuleRepository
 class SearchProductsUseCase(
     private val matuleRepository: MatuleRepository,
 ) {
-    suspend operator fun invoke(query: String): Result<List<Product>> {
-        return matuleRepository.searchProducts(query)
+    suspend operator fun invoke(
+        query: String,
+        typeCloses: String?,
+    ): Result<List<Product>> {
+        return matuleRepository.searchProducts(query, typeCloses)
     }
 }
