@@ -6,7 +6,7 @@ import com.fadymarty.network.domain.repository.MatuleRepository
 class GetCurrentUserUseCase(
     private val matuleRepository: MatuleRepository,
 ) {
-    suspend operator fun invoke(): Result<User?> {
+    suspend operator fun invoke(): Result<User> {
         return matuleRepository.getCurrentUser()
     }
 }

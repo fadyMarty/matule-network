@@ -45,7 +45,7 @@ interface MatuleApi {
 
     @GET("collections/products/records")
     suspend fun searchProducts(
-        @Query("filter") filter: String,
+        @Query("filter") filter: String?,
     ): PocketbaseResponseDto<ProductDto>
 
     @GET("collections/products/records/{id}")
@@ -91,7 +91,9 @@ interface MatuleApi {
     ): AuthResponseDto
 
     @GET("collections/cart/records")
-    suspend fun getBucket(): PocketbaseResponseDto<CartDto>
+    suspend fun getBucket(
+        @Query("filter") filter: String,
+    ): PocketbaseResponseDto<CartDto>
 
     @DELETE("collections/cart/records/{id}")
     suspend fun deleteCart(

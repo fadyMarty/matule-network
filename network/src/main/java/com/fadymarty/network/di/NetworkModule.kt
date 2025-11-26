@@ -9,7 +9,7 @@ import com.fadymarty.network.data.remote.MatuleInterceptor
 import com.fadymarty.network.data.repository.MatuleRepositoryImpl
 import com.fadymarty.network.domain.manager.AuthManager
 import com.fadymarty.network.domain.repository.MatuleRepository
-import com.fadymarty.network.domain.use_case.bucket.CreateCartUseCase
+import com.fadymarty.network.domain.use_case.bucket.AddProductToBucketUseCase
 import com.fadymarty.network.domain.use_case.bucket.DeleteCartUseCase
 import com.fadymarty.network.domain.use_case.bucket.GetBucketUseCase
 import com.fadymarty.network.domain.use_case.bucket.UpdateCartUseCase
@@ -21,9 +21,9 @@ import com.fadymarty.network.domain.use_case.shop.GetProductByIdUseCase
 import com.fadymarty.network.domain.use_case.shop.GetProductsUseCase
 import com.fadymarty.network.domain.use_case.shop.SearchProductsUseCase
 import com.fadymarty.network.domain.use_case.user.AuthWithPasswordUseCase
-import com.fadymarty.network.domain.use_case.user.CreateUserUseCase
 import com.fadymarty.network.domain.use_case.user.GetCurrentUserUseCase
 import com.fadymarty.network.domain.use_case.user.GetUserByIdUseCase
+import com.fadymarty.network.domain.use_case.user.RegisterUseCase
 import com.fadymarty.network.domain.use_case.user.UpdateUserUseCase
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -71,7 +71,7 @@ val networkModule = module {
 
     singleOf(::AuthWithPasswordUseCase)
 
-    singleOf(::CreateUserUseCase)
+    singleOf(::RegisterUseCase)
 
     singleOf(::UpdateUserUseCase)
 
@@ -83,7 +83,7 @@ val networkModule = module {
 
     singleOf(::GetProductByIdUseCase)
 
-    singleOf(::CreateCartUseCase)
+    singleOf(::AddProductToBucketUseCase)
 
     singleOf(::UpdateCartUseCase)
 
@@ -98,7 +98,7 @@ val networkModule = module {
     singleOf(::GetCurrentUserUseCase)
 
     singleOf(::GetBucketUseCase)
-    
+
     singleOf(::DeleteCartUseCase)
 
 }

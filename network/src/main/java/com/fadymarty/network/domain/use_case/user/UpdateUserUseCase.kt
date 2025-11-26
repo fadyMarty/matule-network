@@ -6,7 +6,7 @@ import com.fadymarty.network.domain.repository.MatuleRepository
 class UpdateUserUseCase(
     private val matuleRepository: MatuleRepository,
 ) {
-    suspend operator fun invoke(user: User): Result<User?> {
+    suspend operator fun invoke(user: User): Result<User> {
         return matuleRepository.updateUser(user)
     }
 }

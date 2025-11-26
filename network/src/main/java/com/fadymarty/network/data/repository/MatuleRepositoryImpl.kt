@@ -2,12 +2,13 @@ package com.fadymarty.network.data.repository
 
 import com.fadymarty.network.common.safeCall
 import com.fadymarty.network.data.remote.MatuleApi
+import com.fadymarty.network.data.remote.dto.CartDto
+import com.fadymarty.network.data.remote.dto.OrderDto
 import com.fadymarty.network.data.remote.dto.request.AuthRequest
 import com.fadymarty.network.domain.manager.AuthManager
 import com.fadymarty.network.domain.model.AuthResponse
 import com.fadymarty.network.domain.model.Cart
 import com.fadymarty.network.domain.model.News
-import com.fadymarty.network.domain.model.Order
 import com.fadymarty.network.domain.model.Product
 import com.fadymarty.network.domain.model.Project
 import com.fadymarty.network.domain.model.User
@@ -18,43 +19,39 @@ class MatuleRepositoryImpl(
     private val matuleApi: MatuleApi,
     private val authManager: AuthManager,
 ) : MatuleRepository {
+
     override suspend fun authWithPassword(
         email: String,
         password: String,
     ): Result<AuthResponse> {
         return safeCall {
-            val authResponse = matuleApi.authWithPassword(
-                request = AuthRequest(
-                    identity = email,
-                    password = password
-                )
-            ).toAuthResponse()
+            val authResponse = matuleApi
+                .authWithPassword(AuthRequest(email, password))
+                .toAuthResponse()
 
-            authResponse.record.id?.let { id ->
-                authManager.saveSession(
-                    token = authResponse.token,
-                    userId = id
-                )
-            }
+            authManager.saveSession(authResponse.token, authResponse.record.id!!)
 
             authResponse
         }
     }
 
-    override suspend fun createUser(user: User): Result<User> {
+    override suspend fun register(user: User): Result<AuthResponse> {
         return safeCall {
-            matuleApi.createUser(user.toUserDto()).toUser()
+            val user = matuleApi.createUser(user.toUserDto()).toUser()
+
+            val authResponse = matuleApi
+                .authWithPassword(AuthRequest(user.email, user.password!!))
+                .toAuthResponse()
+
+            authManager.saveSession(authResponse.token, authResponse.record.id!!)
+
+            authResponse
         }
     }
 
-    override suspend fun updateUser(user: User): Result<User?> {
+    override suspend fun updateUser(user: User): Result<User> {
         return safeCall {
-            user.id?.let { id ->
-                matuleApi.updateUser(
-                    id = id,
-                    user = user.toUserDto()
-                ).toUser()
-            }
+            matuleApi.updateUser(user.id!!, user.toUserDto()).toUser()
         }
     }
 
@@ -70,10 +67,20 @@ class MatuleRepositoryImpl(
         }
     }
 
-    override suspend fun searchProducts(query: String): Result<List<Product>> {
+    override suspend fun searchProducts(
+        query: String,
+        typeCloses: String?,
+    ): Result<List<Product>> {
         return safeCall {
+            val filters = mutableListOf<String>()
+
+            if (query.isNotEmpty()) filters.add("title ?~ '$query'")
+            if (typeCloses != null) filters.add("typeCloses = '$typeCloses'")
+
+            val filter = filters.joinToString(" && ")
+
             matuleApi.searchProducts(
-                filter = "(title ?~ '$query')"
+                filter = filter.ifEmpty { null }
             ).items.map { it.toProduct() }
         }
     }
@@ -84,33 +91,44 @@ class MatuleRepositoryImpl(
         }
     }
 
-    override suspend fun createCart(cart: Cart): Result<Cart> {
+    override suspend fun addProductToBucket(product: Product): Result<Cart> {
         return safeCall {
-            matuleApi.createCart(cart.toCartDto()).toCart()
+            val userId = authManager.getUserId().first()!!
+
+            matuleApi.createCart(
+                cart = CartDto(
+                    userId = userId,
+                    productId = product.id,
+                    count = 1
+                )
+            ).toCart()
         }
     }
 
-    override suspend fun updateCart(cart: Cart): Result<Cart?> {
+    override suspend fun updateCart(cart: Cart): Result<Cart> {
         return safeCall {
-            cart.id?.let { id ->
-                matuleApi.updateCart(
-                    id = cart.id,
-                    cart = cart.toCartDto()
-                ).toCart()
+            matuleApi.updateCart(cart.id!!, cart.toCartDto()).toCart()
+        }
+    }
+
+    override suspend fun createOrder(bucket: List<Cart>): Result<Unit> {
+        return safeCall {
+            bucket.forEach { cart ->
+                matuleApi.createOrder(
+                    order = OrderDto(
+                        userId = cart.userId,
+                        productId = cart.productId,
+                        count = cart.count
+                    )
+                ).toOrder()
             }
         }
     }
 
-    override suspend fun createOrder(order: Order): Result<Order> {
-        return safeCall {
-            matuleApi.createOrder(order.toOrderDto()).toOrder()
-        }
-    }
-
     override suspend fun getProjects(): Result<List<Project>> {
-        val userId = authManager.getUserId().first()
-
         return safeCall {
+            val userId = authManager.getUserId().first()!!
+
             matuleApi.getProjects(
                 filter = "(user_id = '$userId')"
             ).items.map { it.toProject() }
@@ -129,17 +147,21 @@ class MatuleRepositoryImpl(
         }
     }
 
-    override suspend fun getCurrentUser(): Result<User?> {
-        val userId = authManager.getUserId().first()
-
+    override suspend fun getCurrentUser(): Result<User> {
         return safeCall {
-            userId?.let { matuleApi.getUserById(it).toUser() }
+            val userId = authManager.getUserId().first()!!
+
+            matuleApi.getUserById(userId).toUser()
         }
     }
 
     override suspend fun getBucket(): Result<List<Cart>> {
         return safeCall {
-            matuleApi.getBucket().items.map { it.toCart() }
+            val userId = authManager.getUserId().first()!!
+
+            matuleApi.getBucket(
+                filter = "(user_id = '$userId')"
+            ).items.map { it.toCart() }
         }
     }
 
