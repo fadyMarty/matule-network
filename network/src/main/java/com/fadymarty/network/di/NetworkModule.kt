@@ -22,6 +22,8 @@ import com.fadymarty.network.domain.use_case.shop.SearchProductsUseCase
 import com.fadymarty.network.domain.use_case.user.ClearSessionUseCase
 import com.fadymarty.network.domain.use_case.user.GetCurrentUserUseCase
 import com.fadymarty.network.domain.use_case.user.GetPinUseCase
+import com.fadymarty.network.domain.use_case.user.GetTokenUseCase
+import com.fadymarty.network.domain.use_case.user.GetUserIdUseCase
 import com.fadymarty.network.domain.use_case.user.LoginUseCase
 import com.fadymarty.network.domain.use_case.user.RegisterUseCase
 import com.fadymarty.network.domain.use_case.user.SavePinUseCase
@@ -70,6 +72,8 @@ val networkModule = module {
     singleOf(::ClearSessionUseCase)
     singleOf(::SavePinUseCase)
     singleOf(::GetPinUseCase)
+    singleOf(::GetTokenUseCase)
+    singleOf(::GetUserIdUseCase)
 
     singleOf(::GetNewsUseCase)
     singleOf(::GetCatalogUseCase)
