@@ -14,9 +14,9 @@ class MatuleInterceptor(
             authManager.getToken().first()
         }
         val request = chain.request().newBuilder()
-            .addHeader("Content-Type", "application/json")
-            .addHeader("Authorization", "$token")
-            .build()
-        return chain.proceed(request)
+        token?.let {
+            request.addHeader("Authorization", it)
+        }
+        return chain.proceed(request.build())
     }
 }

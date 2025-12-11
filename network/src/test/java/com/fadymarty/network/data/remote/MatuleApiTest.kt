@@ -35,7 +35,7 @@ class MatuleApiTest {
     }
 
     @Test
-    fun `authenticate should return auth response with token`() = runTest {
+    fun `login should return auth response with token`() = runTest {
         val authRequest = AuthRequest(
             identity = "indentity",
             password = "password"
@@ -63,7 +63,7 @@ class MatuleApiTest {
             """.trimIndent()
         )
         mockWebServer.enqueue(mockResponse)
-        val response = matuleApi.authenticate(authRequest)
+        val response = matuleApi.login(authRequest)
         assertThat(response.token).isEqualTo("token")
     }
 

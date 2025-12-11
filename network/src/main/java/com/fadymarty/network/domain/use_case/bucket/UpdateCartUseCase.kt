@@ -6,7 +6,7 @@ import com.fadymarty.network.domain.repository.MatuleRepository
 class UpdateCartUseCase(
     private val matuleRepository: MatuleRepository,
 ) {
-    suspend operator fun invoke(bucketId: String, cart: Cart): Result<Cart> {
-        return matuleRepository.updateCart(bucketId, cart)
+    suspend operator fun invoke(cart: Cart): Result<Cart> {
+        return matuleRepository.updateCart(cart)
     }
 }

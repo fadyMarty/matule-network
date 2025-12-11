@@ -5,6 +5,7 @@ import com.fadymarty.network.data.remote.MatuleApi
 import com.fadymarty.network.data.remote.dto.CartDto
 import com.fadymarty.network.data.remote.dto.requests.AuthRequest
 import com.fadymarty.network.domain.manager.AuthManager
+import com.fadymarty.network.domain.model.AuthResponse
 import com.fadymarty.network.domain.model.Cart
 import com.fadymarty.network.domain.model.News
 import com.fadymarty.network.domain.model.Order
@@ -18,28 +19,33 @@ class MatuleRepositoryImpl(
     private val matuleApi: MatuleApi,
     private val authManager: AuthManager,
 ) : MatuleRepository {
-    override suspend fun authenticate(
+    override suspend fun login(
         email: String,
         password: String,
-    ): Result<Unit> {
+    ): Result<AuthResponse> {
         return safeCall {
-            val authResponse = matuleApi.authenticate(AuthRequest(email, password))
-            authResponse.record.id?.let { id ->
-                authManager.saveSession(authResponse.token, id)
-            }
+            val authResponse = matuleApi
+                .login(AuthRequest(email, password))
+                .toAuthResponse()
+            authManager.saveSession(
+                token = authResponse.token,
+                userId = authResponse.record.id!!
+            )
+            authResponse
         }
     }
 
-    override suspend fun register(user: User): Result<Unit> {
+    override suspend fun register(user: User): Result<AuthResponse> {
         return safeCall {
             matuleApi.register(user.toUserDto())
-            user.password?.let { password ->
-                val request = AuthRequest(user.email, password)
-                val authResponse = matuleApi.authenticate(request)
-                authResponse.record.id?.let {
-                    authManager.saveSession(authResponse.token, it)
-                }
-            }
+            val authResponse = matuleApi
+                .login(AuthRequest(user.email, user.password!!))
+                .toAuthResponse()
+            authManager.saveSession(
+                token = authResponse.token,
+                userId = authResponse.record.id!!
+            )
+            authResponse
         }
     }
 
@@ -96,9 +102,9 @@ class MatuleRepositoryImpl(
         }
     }
 
-    override suspend fun updateCart(bucketId: String, cart: Cart): Result<Cart> {
+    override suspend fun updateCart(cart: Cart): Result<Cart> {
         return safeCall {
-            matuleApi.updateCart(bucketId, cart.toCartDto()).toCart()
+            matuleApi.updateCart(cart.id!!, cart.toCartDto()).toCart()
         }
     }
 
@@ -127,19 +133,16 @@ class MatuleRepositoryImpl(
         }
     }
 
-    override suspend fun getCurrentUser(): Result<User?> {
+    override suspend fun getCurrentUser(): Result<User> {
         return safeCall {
             val userId = authManager.getUserId().first()
-            userId?.let {
-                matuleApi.getUserById(userId).toUser()
-            }
+            matuleApi.getUserById(userId!!).toUser()
         }
     }
 
     override suspend fun getBucket(): Result<List<Cart>> {
         return safeCall {
             val userId = authManager.getUserId().first()
-
             matuleApi.getBucket(
                 filter = "(user_id = '$userId')"
             ).items.map { it.toCart() }

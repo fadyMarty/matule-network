@@ -25,8 +25,6 @@ import com.fadymarty.network.domain.use_case.user.GetPinUseCase
 import com.fadymarty.network.domain.use_case.user.LoginUseCase
 import com.fadymarty.network.domain.use_case.user.RegisterUseCase
 import com.fadymarty.network.domain.use_case.user.SavePinUseCase
-import ge.tbcbank.retrocache.RetroCacheInterceptor
-import ge.tbcbank.retrocache.RetroCacheManager
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -40,15 +38,6 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 val Context.dataStore by preferencesDataStore("settings")
 
 val networkModule = module {
-
-    single {
-        RetroCacheInterceptor(
-            retroCacheManager = RetroCacheManager.Builder()
-                .enableLogger(true)
-                .build()
-        )
-    }
-
     single {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -56,11 +45,9 @@ val networkModule = module {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .addInterceptor(get<MatuleInterceptor>())
-            .addInterceptor(get<RetroCacheInterceptor>())
             .authenticator(get<MatuleAuthenticator>())
             .build()
     }
-
     single {
         val json = Json { ignoreUnknownKeys = true }
 
@@ -73,11 +60,8 @@ val networkModule = module {
     }
 
     singleOf(::AuthManagerImpl) { bind<AuthManager>() }
-
     singleOf(::MatuleRepositoryImpl) { bind<MatuleRepository>() }
-
     singleOf(::MatuleInterceptor)
-
     singleOf(::MatuleAuthenticator)
 
     singleOf(::LoginUseCase)
