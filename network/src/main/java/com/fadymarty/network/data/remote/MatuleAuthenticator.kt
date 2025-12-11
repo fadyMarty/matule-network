@@ -7,9 +7,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.Authenticator
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
@@ -24,12 +26,10 @@ class MatuleAuthenticator(
             try {
                 token?.let {
                     val authResponse = refresh(it)
-                    authResponse.record.id?.let { id ->
-                        authManager.saveSession(
-                            token = authResponse.token,
-                            userId = id
-                        )
-                    }
+                    authManager.saveSession(
+                        token = authResponse.token,
+                        userId = authResponse.record.id!!
+                    )
                     response.request.newBuilder()
                         .addHeader("Authorization", authResponse.token)
                         .build()
@@ -43,11 +43,19 @@ class MatuleAuthenticator(
     }
 
     private suspend fun refresh(token: String): AuthResponseDto {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
         val json = Json { ignoreUnknownKeys = true }
 
         val matuleApi = Retrofit.Builder()
             .baseUrl(MatuleApi.BASE_URL)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .client(okHttpClient)
             .build()
             .create(MatuleApi::class.java)
 
