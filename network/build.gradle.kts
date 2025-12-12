@@ -58,9 +58,9 @@ dependencies {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.gitea.fadymarty"
+            groupId = "com.github.fadymarty"
             artifactId = "matule-network"
-            version = "1.0.1"
+            version = "2.0.0"
 
             afterEvaluate {
                 from(components["release"])
