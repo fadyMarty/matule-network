@@ -8,6 +8,6 @@ class ObserveCartsUseCase(
     private val matuleRepository: MatuleRepository,
 ) {
     operator fun invoke(): Flow<List<Cart>> {
-        return matuleRepository.cartsFlow
+        return matuleRepository.observeCarts()
     }
 }

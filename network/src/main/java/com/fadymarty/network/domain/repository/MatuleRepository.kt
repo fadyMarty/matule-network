@@ -6,11 +6,12 @@ import com.fadymarty.network.domain.model.News
 import com.fadymarty.network.domain.model.Product
 import com.fadymarty.network.domain.model.Project
 import com.fadymarty.network.domain.model.User
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface MatuleRepository {
-    val cartsFlow: StateFlow<List<Cart>>
-    val projectsFlow: StateFlow<List<Project>>
+    fun observeCarts(): Flow<List<Cart>>
+    fun observeProjects(): Flow<List<Project>>
     suspend fun login(
         email: String,
         password: String,

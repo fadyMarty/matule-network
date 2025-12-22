@@ -13,8 +13,8 @@ import com.fadymarty.network.domain.model.Product
 import com.fadymarty.network.domain.model.Project
 import com.fadymarty.network.domain.model.User
 import com.fadymarty.network.domain.repository.MatuleRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 
@@ -23,11 +23,12 @@ class MatuleRepositoryImpl(
     private val authManager: AuthManager,
 ) : MatuleRepository {
 
-    private val _cartsFlow = MutableStateFlow<List<Cart>>(emptyList())
-    override val cartsFlow = _cartsFlow.asStateFlow()
+    private val cartsFlow = MutableStateFlow<List<Cart>>(emptyList())
+    private val projectsFlow = MutableStateFlow<List<Project>>(emptyList())
 
-    private val _projectsFlow = MutableStateFlow<List<Project>>(emptyList())
-    override val projectsFlow = _projectsFlow.asStateFlow()
+    override fun observeCarts(): Flow<List<Cart>> = cartsFlow
+
+    override fun observeProjects(): Flow<List<Project>> = projectsFlow
 
     override suspend fun login(
         email: String,
@@ -134,7 +135,7 @@ class MatuleRepositoryImpl(
     override suspend fun getProjects(): Result<List<Project>> {
         return safeCall {
             val projects = matuleApi.getProjects().items.map { it.toProject() }
-            _projectsFlow.update { projects }
+            projectsFlow.update { projects }
             projects
         }
     }
@@ -160,7 +161,7 @@ class MatuleRepositoryImpl(
             val carts = matuleApi.getCarts(
                 filter = "(user_id = '$userId')"
             ).items.map { it.toCart() }
-            _cartsFlow.update { carts }
+            cartsFlow.update { carts }
             carts
         }
     }

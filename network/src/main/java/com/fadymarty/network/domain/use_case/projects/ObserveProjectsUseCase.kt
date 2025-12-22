@@ -8,6 +8,6 @@ class ObserveProjectsUseCase(
     private val matuleRepository: MatuleRepository,
 ) {
     operator fun invoke(): Flow<List<Project>> {
-        return matuleRepository.projectsFlow
+        return matuleRepository.observeProjects()
     }
 }
