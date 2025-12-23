@@ -61,7 +61,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.fadymarty"
             artifactId = "matule-network"
-            version = "2.0.4"
+            version = "2.0.1"
 
             afterEvaluate {
                 from(components["release"])
