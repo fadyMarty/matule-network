@@ -1,6 +1,6 @@
 package com.fadymarty.network.common
 
-suspend inline fun <reified T> safeCall(
+suspend fun <T> safeCall(
     execute: suspend () -> T,
 ): Result<T> {
     return try {

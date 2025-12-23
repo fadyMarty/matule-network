@@ -23,12 +23,12 @@ class MatuleRepositoryImpl(
     private val authManager: AuthManager,
 ) : MatuleRepository {
 
-    private val cartsFlow = MutableStateFlow<List<Cart>>(emptyList())
-    private val projectsFlow = MutableStateFlow<List<Project>>(emptyList())
+    private val carts = MutableStateFlow<List<Cart>>(emptyList())
+    private val projects = MutableStateFlow<List<Project>>(emptyList())
 
-    override fun observeCarts(): Flow<List<Cart>> = cartsFlow
+    override fun observeCarts(): Flow<List<Cart>> = carts
 
-    override fun observeProjects(): Flow<List<Project>> = projectsFlow
+    override fun observeProjects(): Flow<List<Project>> = projects
 
     override suspend fun login(
         email: String,
@@ -134,9 +134,11 @@ class MatuleRepositoryImpl(
 
     override suspend fun getProjects(): Result<List<Project>> {
         return safeCall {
-            val projects = matuleApi.getProjects().items.map { it.toProject() }
-            projectsFlow.update { projects }
-            projects
+            matuleApi.getProjects().items
+                .map { it.toProject() }
+                .also { newProjects ->
+                    projects.update { newProjects }
+                }
         }
     }
 
@@ -158,11 +160,13 @@ class MatuleRepositoryImpl(
     override suspend fun getCarts(): Result<List<Cart>> {
         return safeCall {
             val userId = authManager.getUserId().first()
-            val carts = matuleApi.getCarts(
+            matuleApi.getCarts(
                 filter = "(user_id = '$userId')"
-            ).items.map { it.toCart() }
-            cartsFlow.update { carts }
-            carts
+            ).items
+                .map { it.toCart() }
+                .also { newCarts ->
+                    carts.update { newCarts }
+                }
         }
     }
 
