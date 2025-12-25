@@ -50,7 +50,7 @@ class MatuleRepositoryImpl(
         return safeCall {
             matuleApi.register(user.toUserDto())
             val authResponse = matuleApi
-                .login(AuthRequest(user.email, user.password!!))
+                .login(AuthRequest(user.email!!, user.password!!))
                 .toAuthResponse()
             authManager.saveSession(
                 token = authResponse.token,
