@@ -22,7 +22,7 @@ data class UserDto(
     @SerialName("dateBirthday")
     val dateBirthday: String,
     val gender: String,
-    val email: String,
+    val email: String? = null,
     val password: String? = null,
     val passwordConfirm: String? = null,
 ) {

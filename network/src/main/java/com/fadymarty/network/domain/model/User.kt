@@ -15,7 +15,7 @@ data class User(
     val verified: Boolean? = null,
     val dateBirthday: String,
     val gender: String,
-    val email: String,
+    val email: String? = null,
     val password: String? = null,
     val passwordConfirm: String? = null,
 ) {
