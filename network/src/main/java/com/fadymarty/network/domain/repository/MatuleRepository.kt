@@ -7,7 +7,6 @@ import com.fadymarty.network.domain.model.Product
 import com.fadymarty.network.domain.model.Project
 import com.fadymarty.network.domain.model.User
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 
 interface MatuleRepository {
     fun observeCarts(): Flow<List<Cart>>
@@ -21,7 +20,7 @@ interface MatuleRepository {
     suspend fun updateUser(user: User): Result<User>
     suspend fun getNews(): Result<List<News>>
     suspend fun getProducts(): Result<List<Product>>
-    suspend fun searchProducts(query: String, type: String?): Result<List<Product>>
+    suspend fun searchProducts(query: String): Result<List<Product>>
     suspend fun addProductToCart(product: Product): Result<Cart>
     suspend fun updateCart(cart: Cart): Result<Cart>
     suspend fun createOrder(bucket: List<Cart>): Result<Unit>

@@ -44,7 +44,7 @@ interface MatuleApi {
 
     @GET("collections/products/records")
     suspend fun searchProducts(
-        @Query("filter") filter: String?,
+        @Query("filter") filter: String,
     ): PocketbaseResponseDto<ProductDto>
 
     @GET("collections/products/records/{id}")

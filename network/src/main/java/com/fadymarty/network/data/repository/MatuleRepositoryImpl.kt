@@ -80,18 +80,10 @@ class MatuleRepositoryImpl(
         }
     }
 
-    override suspend fun searchProducts(
-        query: String,
-        type: String?,
-    ): Result<List<Product>> {
+    override suspend fun searchProducts(query: String): Result<List<Product>> {
         return safeCall {
             matuleApi.searchProducts(
-                filter = when {
-                    type != null && query.isNotEmpty() -> "(title ?~ '$query' && typeCloses = '$type')"
-                    type == null && query.isNotEmpty() -> "(title ?~ '$query')"
-                    type != null && query.isEmpty() -> "(typeCloses = '$type')"
-                    else -> null
-                }
+                filter = "(title ?~ '$query')"
             ).items.map { it.toProduct() }
         }
     }
